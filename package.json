@@ -19,5 +19,8 @@
   "devDependencies": {
     "source-map-loader": "^2.0.1",
     "webpack-cli": "^4.6.0"
+  },
+  "dependencies": {
+    "date-fns": "^2.21.3"
   }
 }
