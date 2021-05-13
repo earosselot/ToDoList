@@ -1,0 +1,45 @@
+.project-container{
+    display: flex;
+    /*height: 500px;*/
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: antiquewhite;
+    padding: 10px;
+    border: 2px solid black;
+}
+
+.project {
+    background-color: white;
+    flex-basis 350px;
+    margin: 5px;
+    text-align: left;
+    line-height: 17px;
+    font-size: 15px;
+    border: 2px solid black;
+}
+
+.project .project-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.todo-description {
+    padding-left: 25px;
+    font-size: 13px;
+    color: grey;
+}
+
+.priority1 {
+    color: red;
+}
+
+.priority2 {
+    color: blue;
+}
+
+.priority3 {
+    color: black;
+}
