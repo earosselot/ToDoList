@@ -1,44 +1,39 @@
 
-class ToDoCard {
-    constructor(title, description) {
-        this.card = document.createElement('div');
-        this.card.className = 'card';
-        this.card.style.width = '18rem';
+const domNote = (id, title, description, priority) => {
+    const note = document.createElement('div');
+    note.className = 'todo-note';
 
-        this.header = document.createElement('div');
-        this.header.className = 'card-header';
-        this.header.textContent = title;
+    const completeChkbx = document.createElement('input');
+    completeChkbx.setAttribute('type', 'checkbox');
+    completeChkbx.setAttribute('id', id);
+    // todo: ver cual de los dos que siguen es realmente necesario.
+    completeChkbx.setAttribute('name', 'complete');
+    completeChkbx.setAttribute('value', 'complete');
 
-        this.body = document.createElement('div');
-        this.body.className = 'card-body';
+    const completeChkbxLabel = document.createElement('label');
+    completeChkbxLabel.setAttribute('for', id);
+    completeChkbxLabel.className = 'todo-title';
+    completeChkbxLabel.className = `priority${priority}`;
+    completeChkbxLabel.textContent = title;
 
-        this.bodyText = document.createElement('p');
-        this.bodyText.className = 'card-text';
-        this.bodyText.textContent = description;
+    const descriptionDiv = document.createElement('div');
+    descriptionDiv.className = 'todo-description';
+    descriptionDiv.textContent = description;
 
-        this.completeBtn = document.createElement('input');
-        this.completeBtn.className = 'btn-check';
-        this.completeBtn.setAttribute('type', 'checkbox');
-        this.completeBtn.setAttribute('id', 'complete-btn');
-        this.completeBtn.setAttribute('autocomplete', 'off');
+    note.appendChild(completeChkbx);
+    note.appendChild(completeChkbxLabel);
+    note.appendChild(descriptionDiv);
 
-        this.completeBtnLabel = document.createElement('label');
-        this.completeBtnLabel.className = 'btn btn-outline-success';
-        this.completeBtnLabel.setAttribute('for', 'complete-btn');
-        this.completeBtnLabel.textContent = 'Done';
+    return {note}
+}
 
-        this.body.appendChild(this.bodyText);
-        this.body.appendChild(this.completeBtn);
-        this.body.appendChild(this.completeBtnLabel);
+// todo: agregar un boton de eliminar nota
+// todo: agregar event listeners
 
-        this.card.appendChild(this.header);
-        this.card.appendChild(this.body);
-
-        // this.element.innerHTML = something;
 
         // method binded to the object (every object has his own) this prevent this "loosing" on event listeners
         // this.element.onclick = this.onClick.bind(this);
-    }
+
 
     // onClick() {
     //     this.element.classList.toggle('clicked');
@@ -50,9 +45,9 @@ class ToDoCard {
     //     // this.complete = checked (?)
     //     event.stopPropagation();  // this line will prevent triggereing card event
     // }
-}
 
-export { ToDoCard };
+
+export { domNote };
 
 // https://stackoverflow.com/questions/41894492/how-is-object-oriented-javascript-used-for-dom-manipulation/41896245
 
