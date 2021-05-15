@@ -1,11 +1,14 @@
+// todo: agregar fechas
 
-const domNote = (id, title, description, priority) => {
+const Note = (id, title, description, priority) => {
+    // Creates an object containing a note DOM element
+
     const note = document.createElement('div');
     note.className = 'todo-note';
 
     const completeChkbx = document.createElement('input');
     completeChkbx.setAttribute('type', 'checkbox');
-    completeChkbx.setAttribute('id', id);
+    completeChkbx.setAttribute('id', `note-${id}`);
     // todo: ver cual de los dos que siguen es realmente necesario.
     completeChkbx.setAttribute('name', 'complete');
     completeChkbx.setAttribute('value', 'complete');
@@ -24,30 +27,45 @@ const domNote = (id, title, description, priority) => {
     note.appendChild(completeChkbxLabel);
     note.appendChild(descriptionDiv);
 
+    // todo: agregar un boton de eliminar nota
+    // todo: agregar event listeners
+
     return {note}
 }
 
-// todo: agregar un boton de eliminar nota
-// todo: agregar event listeners
+
+const Project = (id, name) => {
+    // creates an object containing a Project DOM element
+
+    const project = document.createElement('div');
+    project.className = 'project';
+    project.setAttribute('id', `proj-${id}`);
+
+    const projectTitle = document.createElement('div');
+    projectTitle.className = 'project-title';
+    projectTitle.innerText = name;
+
+    const projectNotes = document.createElement('div');
+    projectNotes.className = 'project-notes';
+
+    const addNoteContainer = document.createElement('div');
+    addNoteContainer.className = 'add-note-container';
+
+    const addNoteBtn = document.createElement('button');
+    addNoteBtn.setAttribute('id', `add-note-proj-${id}`);
+    addNoteBtn.textContent = 'Add Note';
+
+    addNoteContainer.appendChild(addNoteBtn);
+
+    project.appendChild(projectTitle);
+    project.appendChild(projectNotes);
+    project.appendChild(addNoteContainer);
+
+    return {project}
+}
 
 
-        // method binded to the object (every object has his own) this prevent this "loosing" on event listeners
-        // this.element.onclick = this.onClick.bind(this);
-
-
-    // onClick() {
-    //     this.element.classList.toggle('clicked');
-    //
-    // }
-
-    // This will also prevent "this loosing"
-    // toggleComplete = (event) => {
-    //     // this.complete = checked (?)
-    //     event.stopPropagation();  // this line will prevent triggereing card event
-    // }
-
-
-export { domNote };
+export { Note, Project };
 
 // https://stackoverflow.com/questions/41894492/how-is-object-oriented-javascript-used-for-dom-manipulation/41896245
 

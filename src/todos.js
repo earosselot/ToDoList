@@ -2,7 +2,7 @@ import { compareDesc } from 'date-fns';
 
 let nextId = 0;
 
-const createNote = (title, description, _dueDate, priority, project) => {
+const Note = (title, description, _dueDate, priority, project) => {
 
     let id = nextId++;
 
@@ -28,7 +28,15 @@ const createNote = (title, description, _dueDate, priority, project) => {
     return {id, title, description, creationDate, dueDate, priority, project, complete}
 }
 
+let projId = 0;
 
-export { createNote };
+const Project = (name) => {
+    let id = projId++;
+    let notes = []
+    return {id, name, notes}
+}
+
+
+export { Note, Project };
 
 // creating new to-dos, setting to-dos as complete, changing to-do priority
