@@ -10,110 +10,80 @@
 
     <div class="project-container" id="project-container">
 
-        <div class="project">
-
-            <div class="project-title">Project</div>
+        <div class="project" id="prj-32">
+            <div class="project-title">Home Work</div>
 
             <div class="project-notes">
                 <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority1">An important thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
-
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority2">Another thing to do</label>
+                    <input type="checkbox" id="note-232131" name="complete" value="complete">
+                    <label for="note-232131" class="todo-title priority1">An important thing to do</label>
                     <div class="todo-description">Some thing about the task</div>
                 </div>
                 <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority3">Less important thing to do</label>
+                    <input type="checkbox" id="note-1441241152512" name="complete" value="complete">
+                    <label for="note-1441241152512" class="todo-title priority2">Another thing to do</label>
+                    <div class="todo-description">Some thing about the task</div>
+                </div>
+                <div class="todo-note">
+                    <input type="checkbox" id="note-25215151253" name="complete" value="complete">
+                    <label for="note-25215151253" class="todo-title priority2">Another thing to do</label>
                     <div class="todo-description">Some thing about the task</div>
                 </div>
             </div>
-        </div>
 
-        <div class="project">
-            <div class="project-title">Project</div>
-            <div class="project-notes">
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority1">An important thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
-
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority2">Another thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority3">Less important thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
+            <!--Add Project Button-->
+            <div class="add-note-container">
+                <button id="open-add-note-modal-btn-prj32">Add Note</button>
             </div>
+
         </div>
-
-        <div class="project">
-            <div class="project-title">Project</div>
-            <div class="project-notes">
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority1">An important thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
-
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority2">Another thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority3">Less important thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="project">
-            <div class="project-title">Project</div>
-            <div class="project-notes">
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority1">An important thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
-
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority2">Another thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
-                <div class="todo-note">
-                    <input type="checkbox" id="note-id" name="complete" value="complete">
-                    <label for="note-id" class="todo-title priority3">Less important thing to do</label>
-                    <div class="todo-description">Some thing about the task</div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <script src="main.js"></script> 
+    <!--Add Note Modal-->
+    <div id="add-note-modal" class="modal">
+        <div class="modal-content">
+            <span id="add-note-modal-close" class="close">&times;</span>
+            <p>Add Note Form</p>
+            <form name="new-note">
+                <!--Title and Description-->
+                <label for="add-note-title">Title:</label>
+                <input type="text" placeholder="note title" name="note-title" id="add-note-title"><br>
+                <label for="add-note-description">Description:</label>
+                <input type="text" placeholder="note description" name="note-description" id="add-note-description"><br>
+                <!--Due Date-->
+                <label for="due-date">Due date:</label>
+                <input type="date" id="due-date" name="due-date"><br>
+                <!--Priority-->
+                <input type="radio" id="priority1" name="priority" value="1">
+                <label for="priority1">1</label>
+                <input type="radio" id="priority2" name="priority" value="2">
+                <label for="priority2">2</label>
+                <input type="radio" id="priority3" name="priority" value="3">
+                <label for="priority3">3</label><br>
+
+                <button type="submit" id="add-note-submit">Add Note!</button>
+            </form>
+        </div>
+    </div>
+
+    <!--Add Project Button-->
+    <div class="add-prj-container">
+        <button id="open-add-prj-modal-btn">Add Project</button>
+    </div>
+
+    <!--Add Project Modal-->
+    <div id="add-prj-modal" class="modal">
+        <div class="modal-content">
+            <span id="add-project-modal-close" class="close">&times;</span>
+            <p>Add Project Form</p>
+            <form name="new-prj">
+                <input type="text" placeholder="project title" name="prj-title" id="add-prj-form"><br>
+                <button type="submit" id="add-prj-submit">Add Project!</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
 </body>
 
 </html>
-
-
-<!--        Card Example    -->
-<!--        <div class="card note" style="width: 18rem;">-->
-<!--            <div class="card-header">ToDo title</div>-->
-<!--            <div class="card-body">-->
-<!--                <p class="card-text">Things to do tomorrow</p>-->
-<!--                <input type="checkbox" class="btn-check" id="btn-check-outlined" autocomplete="off">-->
-<!--                <label class="btn btn-outline-success" for="btn-check-outlined">Single toggle</label><br>-->
-<!--            </div>-->
-<!--        </div>-->
