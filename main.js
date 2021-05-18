@@ -15,6 +15,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 // todo: agregar fechas
 
+
+
 const Note = (id, title, description, priority) => {
     // Creates an object containing a note DOM element
 
@@ -52,29 +54,37 @@ const Note = (id, title, description, priority) => {
 const Project = (id, name) => {
     // creates an object containing a Project DOM element
 
-    const project = document.createElement('div');
-    project.className = 'project';
-    project.setAttribute('id', `proj-${id}`);
+     const createDiv = (className) => {
+        const div = document.createElement('div');
+        div.className = className;
+        return div
+    }
 
-    const projectTitle = document.createElement('div');
-    projectTitle.className = 'project-title';
+    const createAddNoteBtn = (id) => {
+        const addNoteBtn = document.createElement('button');
+        addNoteBtn.setAttribute('id', `add-note-proj-${id}`);
+        addNoteBtn.textContent = 'Add Note';
+        return addNoteBtn;
+    }
+
+    const createProject = (projectDiv, projectTitle, projectNotes, addNoteContainer, addNoteBtn) => {
+        addNoteContainer.appendChild(addNoteBtn);
+        projectDiv.appendChild(projectTitle);
+        projectDiv.appendChild(projectNotes);
+        projectDiv.appendChild(addNoteContainer);
+        return projectDiv;
+    }
+    const projectDiv = createDiv('project');
+    projectDiv.setAttribute('id', `proj-${id}`);
+
+    const projectTitle = createDiv('project-title');
     projectTitle.innerText = name;
 
-    const projectNotes = document.createElement('div');
-    projectNotes.className = 'project-notes';
+    const projectNotes = createDiv('project-notes');
+    const addNoteContainer = createDiv('add-note-container');
+    const addNoteBtn = createAddNoteBtn(id);
 
-    const addNoteContainer = document.createElement('div');
-    addNoteContainer.className = 'add-note-container';
-
-    const addNoteBtn = document.createElement('button');
-    addNoteBtn.setAttribute('id', `add-note-proj-${id}`);
-    addNoteBtn.textContent = 'Add Note';
-
-    addNoteContainer.appendChild(addNoteBtn);
-
-    project.appendChild(projectTitle);
-    project.appendChild(projectNotes);
-    project.appendChild(addNoteContainer);
+    const project = createProject(projectDiv, projectTitle, projectNotes, addNoteContainer, addNoteBtn);
 
     return {project}
 }
@@ -157,9 +167,12 @@ let projId = 0;
 
 const Project = (name) => {
     let id = projId++;
-    let notes = []
+    let notes = [];
+    // todo: cambiar notes por objeto con key ID y value note
     return {id, name, notes}
 }
+
+
 
 
 
@@ -362,6 +375,7 @@ function prjSubmit(event) {
     addNoteBtn.addEventListener('click', (event) => {
         addNoteModal.style.display = 'block';
         // project id handling, in order to know in which project was launched
+        // todo: cambiar id por un  atributo html project
         const projDomId = event.target.getAttribute('id').split('-');
         currentProjectId = projDomId[3];
     })
@@ -373,7 +387,7 @@ function prjSubmit(event) {
 }
 
 const addPrjForm = document.forms['new-prj'];
-addPrjForm.addEventListener('submit', prjSubmit)
+addPrjForm.addEventListener('submit', prjSubmit);
 
 
 
