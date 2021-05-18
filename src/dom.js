@@ -1,17 +1,20 @@
 // todo: agregar fechas
 
-const Note = (id, title, description, priority) => {
-    // Creates an object containing a note DOM element
 
-    const note = document.createElement('div');
-    note.className = 'todo-note';
+const createDiv = (className) => {
+    const div = document.createElement('div');
+    div.className = className;
+    return div
+}
+
+
+const createCheckBox = (id, title, priority) => {
+    const checkBoxDiv = createDiv('note-box');
 
     const completeChkbx = document.createElement('input');
     completeChkbx.setAttribute('type', 'checkbox');
     completeChkbx.setAttribute('id', `note-${id}`);
-    // todo: ver cual de los dos que siguen es realmente necesario.
     completeChkbx.setAttribute('name', 'complete');
-    completeChkbx.setAttribute('value', 'complete');
 
     const completeChkbxLabel = document.createElement('label');
     completeChkbxLabel.setAttribute('for', id);
@@ -19,12 +22,25 @@ const Note = (id, title, description, priority) => {
     completeChkbxLabel.className = `priority${priority}`;
     completeChkbxLabel.textContent = title;
 
-    const descriptionDiv = document.createElement('div');
-    descriptionDiv.className = 'todo-description';
+    checkBoxDiv.appendChild(completeChkbx)
+    checkBoxDiv.appendChild(completeChkbxLabel)
+
+    return checkBoxDiv
+}
+
+
+const Note = (id, title, description, priority) => {
+    // DOM Note Factory
+    // Creates an object containing a note DOM element
+
+    const note = createDiv('todo-note');
+
+    const completeCheckBox = createCheckBox(id, title, priority)
+
+    const descriptionDiv = createDiv('todo-description')
     descriptionDiv.textContent = description;
 
-    note.appendChild(completeChkbx);
-    note.appendChild(completeChkbxLabel);
+    note.appendChild(completeCheckBox);
     note.appendChild(descriptionDiv);
 
     // todo: agregar un boton de eliminar nota
@@ -35,31 +51,35 @@ const Note = (id, title, description, priority) => {
 
 
 const Project = (id, name) => {
+    // DOM Project Factory
     // creates an object containing a Project DOM element
 
-    const project = document.createElement('div');
-    project.className = 'project';
-    project.setAttribute('id', `proj-${id}`);
+    const createAddNoteBtn = (id) => {
+        const addNoteBtn = document.createElement('button');
+        addNoteBtn.setAttribute('id', `add-note-proj-${id}`);
+        addNoteBtn.textContent = 'Add Note';
+        return addNoteBtn;
+    }
 
-    const projectTitle = document.createElement('div');
-    projectTitle.className = 'project-title';
+    const createProject = (projectDiv, projectTitle, projectNotes, addNoteContainer, addNoteBtn) => {
+        addNoteContainer.appendChild(addNoteBtn);
+        projectDiv.appendChild(projectTitle);
+        projectDiv.appendChild(projectNotes);
+        projectDiv.appendChild(addNoteContainer);
+        return projectDiv;
+    }
+
+    const projectDiv = createDiv('project');
+    projectDiv.setAttribute('id', `proj-${id}`);
+
+    const projectTitle = createDiv('project-title');
     projectTitle.innerText = name;
 
-    const projectNotes = document.createElement('div');
-    projectNotes.className = 'project-notes';
+    const projectNotes = createDiv('project-notes');
+    const addNoteContainer = createDiv('add-note-container');
+    const addNoteBtn = createAddNoteBtn(id);
 
-    const addNoteContainer = document.createElement('div');
-    addNoteContainer.className = 'add-note-container';
-
-    const addNoteBtn = document.createElement('button');
-    addNoteBtn.setAttribute('id', `add-note-proj-${id}`);
-    addNoteBtn.textContent = 'Add Note';
-
-    addNoteContainer.appendChild(addNoteBtn);
-
-    project.appendChild(projectTitle);
-    project.appendChild(projectNotes);
-    project.appendChild(addNoteContainer);
+    const project = createProject(projectDiv, projectTitle, projectNotes, addNoteContainer, addNoteBtn);
 
     return {project}
 }

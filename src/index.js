@@ -126,6 +126,7 @@ function prjSubmit(event) {
     addNoteBtn.addEventListener('click', (event) => {
         addNoteModal.style.display = 'block';
         // project id handling, in order to know in which project was launched
+        // todo: cambiar id por un  atributo html project
         const projDomId = event.target.getAttribute('id').split('-');
         currentProjectId = projDomId[3];
     })
@@ -137,7 +138,7 @@ function prjSubmit(event) {
 }
 
 const addPrjForm = document.forms['new-prj'];
-addPrjForm.addEventListener('submit', prjSubmit)
+addPrjForm.addEventListener('submit', prjSubmit);
 
 
 
