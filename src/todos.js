@@ -35,8 +35,7 @@ const Project = (name) => {
     // Project Factory
 
     let id = projId++;
-    let notes = [];
-    // todo: cambiar notes por objeto con key ID y value note
+    let notes = {};
     return {id, name, notes}
 }
 

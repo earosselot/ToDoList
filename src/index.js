@@ -18,43 +18,6 @@ let projects = {};
 //     },
 // ]
 
-// todo: hacer el form
-// const form = document.querySelector('FORMULARIO');
-// form.addEventListener('submit', () => {
-//     // todo: 1-crearnota
-//     const note = todos.createNote(atributos);
-//     // todo: 2-agregar nota al diccionario
-//     if (note.project in notes.keys) {
-//         notes[note.project].push(note);
-//     } else {
-//         notes[note.project] = [note];
-//     }
-//     // todo: 3- crear objeto nota DOM
-//
-//     // todo: 4- agregar nota al DOM
-// })
-
-// note creation
-const note1 = todos.Note('title1', 'description', '10/05/2022', 2, 'default');
-
-// project creation
-const project1 = todos.Project('default');
-
-// add note to project
-project1.notes.push(note1);
-
-// create DOM Project
-const project1Dom = dom.Project(project1.id, project1.name);
-
-// create DOM notes
-const note1Dom = dom.Note(note1.id, note1.title, note1.description, note1.priority);
-
-// add dom-note to dom-project
-project1Dom.project.appendChild(note1Dom.note);
-
-// add dom-project (with notes) to project container in the last position
-const projectContainer = document.querySelector('.project-container');
-projectContainer.appendChild(project1Dom.project);
 
 // ------------------------ ADD NOTE MODAL ------------------------
 const addNoteModal = document.getElementById('add-note-modal');
@@ -82,8 +45,13 @@ function noteSubmit(event) {
     const data = getNoteFormData(formData);
     const note = todos.Note(data.title, data.description, data.dueDate, data.priority, currentProjectId);
 
-    // project.notes.push(note); todo: arreglar esto para que siga la estructura seteada al principio
-    // todo: agregar nota al dom. para esto hay que seleccionar de alguna manera el proyecto (currentProjectId)
+    // save note on project
+    projects[currentProjectId].notes[note.id] = note;
+
+    // todo agregar notas al dom =D
+    const noteDom = dom.Note(note.id, note.title, note.description, note.priority);
+    const projectDom = document.getElementById(`proj-${currentProjectId}`);
+    projectDom.appendChild(noteDom.note);
 
     event.preventDefault();
     addNoteModal.style.display = 'none';
@@ -107,28 +75,35 @@ window.onclick = (event) => {
     }
 }
 
+
+
+// ------------------- ADD PROJECT FORM SUBMIT -------------------
+// project container selection
+const projectContainer = document.querySelector('.project-container');
+
 // this variable will store the Id of the project where the last note is being added
 let currentProjectId;
 
-// ------------------- ADD PROJECT FORM SUBMIT -------------------
+function createProject(eventTarget) {
+    const formData = new FormData(eventTarget);
+    const prjTitle = formData.get('prj-title');
+    return todos.Project(prjTitle);
+}
+
 // New Project Submit handler
 function prjSubmit(event) {
-    // creates an instance of FormData
-    const formData = new FormData(event.target);
-    // the get method from the class FormData returns the input by HTML name property
-    const prjTitle = formData.get('prj-title');
-    const todoProject = todos.Project(prjTitle);
+
+    const todoProject = createProject(event.target);
+
     // save the projects inside an object
     projects[todoProject.id] = todoProject;
     const projectDom = dom.Project(todoProject.id, todoProject.name);
 
-    const addNoteBtn = projectDom.project.querySelector(`#add-note-proj-${todoProject.id}`);
+    const addNoteBtn = projectDom.project.querySelector('.add-note-button');
     addNoteBtn.addEventListener('click', (event) => {
         addNoteModal.style.display = 'block';
         // project id handling, in order to know in which project was launched
-        // todo: cambiar id por un  atributo html project
-        const projDomId = event.target.getAttribute('id').split('-');
-        currentProjectId = projDomId[3];
+        currentProjectId = event.target.getAttribute('project');
     })
 
     projectContainer.appendChild(projectDom.project);
@@ -141,12 +116,6 @@ const addPrjForm = document.forms['new-prj'];
 addPrjForm.addEventListener('submit', prjSubmit);
 
 
-
 // 5. The look of the User Interface is up to you, but it should be able to do the following:
-//      a. view all projects
-//      b. view all todos in each project (probably just the title and duedate.. perhaps changing color for different priorities)
 //      c. expand a single to-do to see/edit its details
 //      d. delete a to-do
-
-// todo: agregar un modal para agregar nuevas notas.
-// https://www.w3schools.com/howto/howto_css_modals.asp
