@@ -16,19 +16,20 @@ __webpack_require__.r(__webpack_exports__);
 // todo: agregar fechas
 
 
+const createDiv = (className) => {
+    const div = document.createElement('div');
+    div.className = className;
+    return div
+}
 
-const Note = (id, title, description, priority) => {
-    // Creates an object containing a note DOM element
 
-    const note = document.createElement('div');
-    note.className = 'todo-note';
+const createCheckBox = (id, title, priority) => {
+    const checkBoxDiv = createDiv('note-box');
 
     const completeChkbx = document.createElement('input');
     completeChkbx.setAttribute('type', 'checkbox');
     completeChkbx.setAttribute('id', `note-${id}`);
-    // todo: ver cual de los dos que siguen es realmente necesario.
     completeChkbx.setAttribute('name', 'complete');
-    completeChkbx.setAttribute('value', 'complete');
 
     const completeChkbxLabel = document.createElement('label');
     completeChkbxLabel.setAttribute('for', id);
@@ -36,12 +37,25 @@ const Note = (id, title, description, priority) => {
     completeChkbxLabel.className = `priority${priority}`;
     completeChkbxLabel.textContent = title;
 
-    const descriptionDiv = document.createElement('div');
-    descriptionDiv.className = 'todo-description';
+    checkBoxDiv.appendChild(completeChkbx)
+    checkBoxDiv.appendChild(completeChkbxLabel)
+
+    return checkBoxDiv
+}
+
+
+const Note = (id, title, description, priority) => {
+    // DOM Note Factory
+    // Creates an object containing a note DOM element
+
+    const note = createDiv('todo-note');
+
+    const completeCheckBox = createCheckBox(id, title, priority)
+
+    const descriptionDiv = createDiv('todo-description')
     descriptionDiv.textContent = description;
 
-    note.appendChild(completeChkbx);
-    note.appendChild(completeChkbxLabel);
+    note.appendChild(completeCheckBox);
     note.appendChild(descriptionDiv);
 
     // todo: agregar un boton de eliminar nota
@@ -52,17 +66,13 @@ const Note = (id, title, description, priority) => {
 
 
 const Project = (id, name) => {
+    // DOM Project Factory
     // creates an object containing a Project DOM element
-
-     const createDiv = (className) => {
-        const div = document.createElement('div');
-        div.className = className;
-        return div
-    }
 
     const createAddNoteBtn = (id) => {
         const addNoteBtn = document.createElement('button');
-        addNoteBtn.setAttribute('id', `add-note-proj-${id}`);
+        addNoteBtn.className = 'add-note-button'
+        addNoteBtn.setAttribute('project', id);
         addNoteBtn.textContent = 'Add Note';
         return addNoteBtn;
     }
@@ -74,6 +84,7 @@ const Project = (id, name) => {
         projectDiv.appendChild(addNoteContainer);
         return projectDiv;
     }
+
     const projectDiv = createDiv('project');
     projectDiv.setAttribute('id', `proj-${id}`);
 
@@ -91,34 +102,6 @@ const Project = (id, name) => {
 
 
 
-
-// https://stackoverflow.com/questions/41894492/how-is-object-oriented-javascript-used-for-dom-manipulation/41896245
-
-// const basicClassName = 'component';
-// const basicTemplate = '<h1>This is my basic component</h1>';
-//
-// class MyComponent {
-//     constructor(template = basicTemplate, className = basicClassName) {
-//         this.template = template;
-//         this.className = className;
-//
-//         this.element = document.createElement('div');
-//         this.element.className = className;
-//         this.element.innerHTML = template;
-//         this.element.onclick = this.onClick.bind(this);
-//         this.element.style.cursor = 'pointer';
-//     }
-//
-//     onClick() {
-//         this.element.classList.toggle('clicked');
-//     }
-// }
-//
-// const component = new MyComponent();
-//
-// const container = document.querySelector('.container');
-//
-// container.appendChild(component.element);
 
 /***/ }),
 
@@ -138,6 +121,7 @@ __webpack_require__.r(__webpack_exports__);
 let nextId = 0;
 
 const Note = (title, description, _dueDate, priority, project) => {
+    // Note Factory
 
     let id = nextId++;
 
@@ -166,17 +150,17 @@ const Note = (title, description, _dueDate, priority, project) => {
 let projId = 0;
 
 const Project = (name) => {
+    // Project Factory
+
     let id = projId++;
-    let notes = [];
-    // todo: cambiar notes por objeto con key ID y value note
+    let notes = {};
     return {id, name, notes}
 }
 
 
 
 
-
-
+// Requeriments
 // creating new to-dos, setting to-dos as complete, changing to-do priority
 
 
@@ -267,43 +251,6 @@ let projects = {};
 //     },
 // ]
 
-// todo: hacer el form
-// const form = document.querySelector('FORMULARIO');
-// form.addEventListener('submit', () => {
-//     // todo: 1-crearnota
-//     const note = todos.createNote(atributos);
-//     // todo: 2-agregar nota al diccionario
-//     if (note.project in notes.keys) {
-//         notes[note.project].push(note);
-//     } else {
-//         notes[note.project] = [note];
-//     }
-//     // todo: 3- crear objeto nota DOM
-//
-//     // todo: 4- agregar nota al DOM
-// })
-
-// note creation
-const note1 = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Note('title1', 'description', '10/05/2022', 2, 'default');
-
-// project creation
-const project1 = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Project('default');
-
-// add note to project
-project1.notes.push(note1);
-
-// create DOM Project
-const project1Dom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Project(project1.id, project1.name);
-
-// create DOM notes
-const note1Dom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Note(note1.id, note1.title, note1.description, note1.priority);
-
-// add dom-note to dom-project
-project1Dom.project.appendChild(note1Dom.note);
-
-// add dom-project (with notes) to project container in the last position
-const projectContainer = document.querySelector('.project-container');
-projectContainer.appendChild(project1Dom.project);
 
 // ------------------------ ADD NOTE MODAL ------------------------
 const addNoteModal = document.getElementById('add-note-modal');
@@ -331,8 +278,13 @@ function noteSubmit(event) {
     const data = getNoteFormData(formData);
     const note = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Note(data.title, data.description, data.dueDate, data.priority, currentProjectId);
 
-    // project.notes.push(note); todo: arreglar esto para que siga la estructura seteada al principio
-    // todo: agregar nota al dom. para esto hay que seleccionar de alguna manera el proyecto (currentProjectId)
+    // save note on project
+    projects[currentProjectId].notes[note.id] = note;
+
+    // todo agregar notas al dom =D
+    const noteDom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Note(note.id, note.title, note.description, note.priority);
+    const projectDom = document.getElementById(`proj-${currentProjectId}`);
+    projectDom.appendChild(noteDom.note);
 
     event.preventDefault();
     addNoteModal.style.display = 'none';
@@ -356,28 +308,35 @@ window.onclick = (event) => {
     }
 }
 
+
+
+// ------------------- ADD PROJECT FORM SUBMIT -------------------
+// project container selection
+const projectContainer = document.querySelector('.project-container');
+
 // this variable will store the Id of the project where the last note is being added
 let currentProjectId;
 
-// ------------------- ADD PROJECT FORM SUBMIT -------------------
+function createProject(eventTarget) {
+    const formData = new FormData(eventTarget);
+    const prjTitle = formData.get('prj-title');
+    return _todos_js__WEBPACK_IMPORTED_MODULE_0__.Project(prjTitle);
+}
+
 // New Project Submit handler
 function prjSubmit(event) {
-    // creates an instance of FormData
-    const formData = new FormData(event.target);
-    // the get method from the class FormData returns the input by HTML name property
-    const prjTitle = formData.get('prj-title');
-    const todoProject = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Project(prjTitle);
+
+    const todoProject = createProject(event.target);
+
     // save the projects inside an object
     projects[todoProject.id] = todoProject;
     const projectDom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Project(todoProject.id, todoProject.name);
 
-    const addNoteBtn = projectDom.project.querySelector(`#add-note-proj-${todoProject.id}`);
+    const addNoteBtn = projectDom.project.querySelector('.add-note-button');
     addNoteBtn.addEventListener('click', (event) => {
         addNoteModal.style.display = 'block';
         // project id handling, in order to know in which project was launched
-        // todo: cambiar id por un  atributo html project
-        const projDomId = event.target.getAttribute('id').split('-');
-        currentProjectId = projDomId[3];
+        currentProjectId = event.target.getAttribute('project');
     })
 
     projectContainer.appendChild(projectDom.project);
@@ -390,15 +349,9 @@ const addPrjForm = document.forms['new-prj'];
 addPrjForm.addEventListener('submit', prjSubmit);
 
 
-
 // 5. The look of the User Interface is up to you, but it should be able to do the following:
-//      a. view all projects
-//      b. view all todos in each project (probably just the title and duedate.. perhaps changing color for different priorities)
 //      c. expand a single to-do to see/edit its details
 //      d. delete a to-do
-
-// todo: agregar un modal para agregar nuevas notas.
-// https://www.w3schools.com/howto/howto_css_modals.asp
 
 })();
 
