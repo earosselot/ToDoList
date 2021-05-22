@@ -23,34 +23,38 @@ const createDiv = (className) => {
 }
 
 
-const createCheckBox = (id, title, priority) => {
-    const checkBoxDiv = createDiv('note-box');
+const createCheckBox = (id, title, priority, projectId) => {
+    const checkboxDiv = createDiv('note-box');
 
-    const completeChkbx = document.createElement('input');
-    completeChkbx.setAttribute('type', 'checkbox');
-    completeChkbx.setAttribute('id', `note-${id}`);
-    completeChkbx.setAttribute('name', 'complete');
+    const completeChekbox = document.createElement('input');
+    completeChekbox.setAttribute('type', 'checkbox');
+    // im going to put id on note div as note attribute
+    completeChekbox.setAttribute('note', `${id}`);
+    completeChekbox.setAttribute('project', `${projectId}`);
+    completeChekbox.setAttribute('name', 'complete');
+    completeChekbox.className = 'complete-checkbox';
 
-    const completeChkbxLabel = document.createElement('label');
-    completeChkbxLabel.setAttribute('for', id);
-    completeChkbxLabel.className = 'todo-title';
-    completeChkbxLabel.className = `priority${priority}`;
-    completeChkbxLabel.textContent = title;
+    const completeChekboxLabel = document.createElement('label');
+    completeChekboxLabel.setAttribute('for', id);
+    completeChekboxLabel.className = 'todo-title';
+    completeChekboxLabel.className = `priority${priority}`;
+    completeChekboxLabel.textContent = title;
 
-    checkBoxDiv.appendChild(completeChkbx)
-    checkBoxDiv.appendChild(completeChkbxLabel)
+    checkboxDiv.appendChild(completeChekbox)
+    checkboxDiv.appendChild(completeChekboxLabel)
 
-    return checkBoxDiv
+    return checkboxDiv
 }
 
 
-const Note = (id, title, description, priority) => {
+const Note = (id, title, description, priority, project) => {
     // DOM Note Factory
     // Creates an object containing a note DOM element
 
     const note = createDiv('todo-note');
+    note.setAttribute('note', `${id}`);
 
-    const completeCheckBox = createCheckBox(id, title, priority)
+    const completeCheckBox = createCheckBox(id, title, priority, project)
 
     const descriptionDiv = createDiv('todo-description')
     descriptionDiv.textContent = description;
@@ -116,11 +120,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Note": () => (/* binding */ Note),
 /* harmony export */   "Project": () => (/* binding */ Project)
 /* harmony export */ });
-
+// import { compareDesc } from 'date-fns';
 
 let nextId = 0;
 
-const Note = (title, description, _dueDate, priority, project) => {
+const Note = (title, description, _dueDate, priority, projectId) => {
     // Note Factory
 
     let id = nextId++;
@@ -144,7 +148,15 @@ const Note = (title, description, _dueDate, priority, project) => {
     // complete default as not completed
     let complete = false;
 
-    return {id, title, description, creationDate, dueDate, priority, project, complete}
+    const toggleComplete = () => {
+        if (complete === true) {
+            complete = false;
+        } else {
+            complete = true;
+        }
+    }
+
+    return {id, title, description, creationDate, dueDate, priority, projectId, complete, toggleComplete}
 }
 
 let projId = 0;
@@ -161,7 +173,7 @@ const Project = (name) => {
 
 
 // Requeriments
-// creating new to-dos, setting to-dos as complete, changing to-do priority
+// creating new to-dos changing to-do priority
 
 
 /***/ })
@@ -239,18 +251,6 @@ __webpack_require__.r(__webpack_exports__);
 // notes dictionary have keys as projects and values are note objects.
 let projects = {};
 
-// projects = [{
-//     'id': projectObject.id,
-//     'project': projectObject,
-//     'notes': [note1, note2, note3,...]
-//     },
-//     {
-//     'id': projectObject.id,
-//     'project': projectObject,
-//     'notes': [note1, note2, note3,...]
-//     },
-// ]
-
 
 // ------------------------ ADD NOTE MODAL ------------------------
 const addNoteModal = document.getElementById('add-note-modal');
@@ -263,28 +263,68 @@ window.onclick = (event) => {
     }
 }
 
-function getNoteFormData(formData) {
-    const title = formData.get('note-title');
-    const description = formData.get('note-description');
-    const dueDate = formData.get('due-date');
-    const priority = formData.get('priority');
-    return {title, description, dueDate, priority}
+
+// ------------------ ADD NOTE FORM SUBMIT AUX -------------------
+function getParameters(formData) {
+    let data = {};
+    data['title'] = formData.get('note-title');
+    data['description'] = formData.get('note-description');
+    data['dueDate'] = formData.get('due-date');
+    data['priority'] = formData.get('priority');
+    return data;
+}
+
+function getNoteFormData(eventTarget) {
+    const formData = new FormData(eventTarget);
+    const data = getParameters(formData);
+    return data
 }
 
 
+function toggleComplete(event) {
+    const noteId = event.target.getAttribute('note');
+    const projectId = event.target.getAttribute('project');
+
+    // todo: implement this logic as todos.note method--- not working yet
+    if (projects[projectId]['notes'][noteId]['complete'] === false) {
+        projects[projectId]['notes'][noteId]['complete'] = true;
+    } else {
+        projects[projectId]['notes'][noteId]['complete'] = false;
+    }
+    console.log(projects[projectId]['notes'][noteId]['complete']);
+    // this method does nothing
+    projects[projectId]['notes'][noteId].toggleComplete();
+    console.log(projects[projectId]['notes'][noteId]['complete']);
+
+    const checkboxLabel = event.target.nextElementSibling;
+    const description = event.target.parentElement.nextElementSibling;
+    checkboxLabel.classList.toggle('completed');
+    description.classList.toggle('completed');
+}
+
 // -------------------- ADD NOTE FORM SUBMIT ---------------------
 function noteSubmit(event) {
-    const formData = new FormData(event.target);
-    const data = getNoteFormData(formData);
+
+    const data = getNoteFormData(event.target);
     const note = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Note(data.title, data.description, data.dueDate, data.priority, currentProjectId);
 
     // save note on project
     projects[currentProjectId].notes[note.id] = note;
 
-    // todo agregar notas al dom =D
-    const noteDom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Note(note.id, note.title, note.description, note.priority);
-    const projectDom = document.getElementById(`proj-${currentProjectId}`);
-    projectDom.appendChild(noteDom.note);
+    // create DOM note
+    const noteDom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Note(note.id, note.title, note.description, note.priority, note.projectId);
+
+    // Add event listeners
+    const  completeNoteCheckbox = noteDom.note.querySelector('.complete-checkbox');
+    console.log(completeNoteCheckbox);
+    completeNoteCheckbox.addEventListener('click', toggleComplete);
+
+    // Add note to DOM
+    const noteDivProjectDom = document.querySelector(`#proj-${currentProjectId} .project-notes`);
+    noteDivProjectDom.appendChild(noteDom.note);
+
+    // set as complete on checkbox click
+
 
     event.preventDefault();
     addNoteModal.style.display = 'none';
@@ -307,7 +347,6 @@ window.onclick = (event) => {
         addPrjModal.style.display = 'none';
     }
 }
-
 
 
 // ------------------- ADD PROJECT FORM SUBMIT -------------------
@@ -345,6 +384,7 @@ function prjSubmit(event) {
     addPrjModal.style.display = 'none';
 }
 
+
 const addPrjForm = document.forms['new-prj'];
 addPrjForm.addEventListener('submit', prjSubmit);
 
@@ -352,6 +392,7 @@ addPrjForm.addEventListener('submit', prjSubmit);
 // 5. The look of the User Interface is up to you, but it should be able to do the following:
 //      c. expand a single to-do to see/edit its details
 //      d. delete a to-do
+// changing to-do priority
 
 })();
 

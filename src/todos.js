@@ -1,8 +1,8 @@
-import { compareDesc } from 'date-fns';
+// import { compareDesc } from 'date-fns';
 
 let nextId = 0;
 
-const Note = (title, description, _dueDate, priority, project) => {
+const Note = (title, description, _dueDate, priority, projectId) => {
     // Note Factory
 
     let id = nextId++;
@@ -26,7 +26,15 @@ const Note = (title, description, _dueDate, priority, project) => {
     // complete default as not completed
     let complete = false;
 
-    return {id, title, description, creationDate, dueDate, priority, project, complete}
+    const toggleComplete = () => {
+        if (complete === true) {
+            complete = false;
+        } else {
+            complete = true;
+        }
+    }
+
+    return {id, title, description, creationDate, dueDate, priority, projectId, complete, toggleComplete}
 }
 
 let projId = 0;
@@ -43,4 +51,4 @@ const Project = (name) => {
 export { Note, Project };
 
 // Requeriments
-// creating new to-dos, setting to-dos as complete, changing to-do priority
+// creating new to-dos changing to-do priority

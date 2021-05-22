@@ -8,34 +8,38 @@ const createDiv = (className) => {
 }
 
 
-const createCheckBox = (id, title, priority) => {
-    const checkBoxDiv = createDiv('note-box');
+const createCheckBox = (id, title, priority, projectId) => {
+    const checkboxDiv = createDiv('note-box');
 
-    const completeChkbx = document.createElement('input');
-    completeChkbx.setAttribute('type', 'checkbox');
-    completeChkbx.setAttribute('id', `note-${id}`);
-    completeChkbx.setAttribute('name', 'complete');
+    const completeChekbox = document.createElement('input');
+    completeChekbox.setAttribute('type', 'checkbox');
+    // im going to put id on note div as note attribute
+    completeChekbox.setAttribute('note', `${id}`);
+    completeChekbox.setAttribute('project', `${projectId}`);
+    completeChekbox.setAttribute('name', 'complete');
+    completeChekbox.className = 'complete-checkbox';
 
-    const completeChkbxLabel = document.createElement('label');
-    completeChkbxLabel.setAttribute('for', id);
-    completeChkbxLabel.className = 'todo-title';
-    completeChkbxLabel.className = `priority${priority}`;
-    completeChkbxLabel.textContent = title;
+    const completeChekboxLabel = document.createElement('label');
+    completeChekboxLabel.setAttribute('for', id);
+    completeChekboxLabel.className = 'todo-title';
+    completeChekboxLabel.className = `priority${priority}`;
+    completeChekboxLabel.textContent = title;
 
-    checkBoxDiv.appendChild(completeChkbx)
-    checkBoxDiv.appendChild(completeChkbxLabel)
+    checkboxDiv.appendChild(completeChekbox)
+    checkboxDiv.appendChild(completeChekboxLabel)
 
-    return checkBoxDiv
+    return checkboxDiv
 }
 
 
-const Note = (id, title, description, priority) => {
+const Note = (id, title, description, priority, project) => {
     // DOM Note Factory
     // Creates an object containing a note DOM element
 
     const note = createDiv('todo-note');
+    note.setAttribute('note', `${id}`);
 
-    const completeCheckBox = createCheckBox(id, title, priority)
+    const completeCheckBox = createCheckBox(id, title, priority, project)
 
     const descriptionDiv = createDiv('todo-description')
     descriptionDiv.textContent = description;
