@@ -99,3 +99,7 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+.completed {
+    text-decoration:line-through;
+}
