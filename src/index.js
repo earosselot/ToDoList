@@ -3,15 +3,7 @@ import * as dom from './dom.js';
 import { compareDesc, format } from 'date-fns';
 // todo: agregar el tema de las fechas
 
-// notes object have keys as projects and values are note objects.
-let projects = {};
-if (localStorage.getItem('projects')) {
-    // todo: no funciona el parse ( y quizás tampoco el stringify). Buscar: guardar "nested objects" en localStorage
-    projects = JSON.parse(localStorage.getItem('projects'));
-    console.log(projects);
-} else {
-    console.log('narnia');
-}
+
 
 // ------------------ ADD NOTE FORM SUBMIT AUX -------------------
 function getParameters(formData) {
@@ -86,29 +78,34 @@ function createAndSaveNote(data) {
     return note
 }
 
+function createDomNote(note) {
+    // create DOM note
+    const noteDom = dom.Note(note.id, note.title, note.description, note.priority, note.projectId);
+    // Checkbox event listener
+    const  completeNoteCheckbox = noteDom.note.querySelector('.complete-checkbox');
+    completeNoteCheckbox.addEventListener('click', toggleComplete);
+    // Edit note event listener
+    noteDom.note.addEventListener('click', launchEditNote);
+    return noteDom;
+}
+
+function createDomNoteAndAddToDom(note) {
+    const noteDom = createDomNote(note);
+    // Add note to DOM
+    const noteDivProjectDom = document.querySelector(`#proj-${note.projectId} .project-notes`);
+    noteDivProjectDom.appendChild(noteDom.note);
+}
+
 // -------------------- ADD NOTE FORM SUBMIT ---------------------
 function noteSubmit(event) {
 
     const data = getNoteFormData(this);
     const note = createAndSaveNote(data);
 
-    // create DOM note
-    const noteDom = dom.Note(note.id, note.title, note.description, note.priority, note.projectId);
-
-    // Checkbox event listener
-    const  completeNoteCheckbox = noteDom.note.querySelector('.complete-checkbox');
-    completeNoteCheckbox.addEventListener('click', toggleComplete);
-
-    // Edit note event listener
-    noteDom.note.addEventListener('click', launchEditNote);
-
-    // Add note to DOM
-    const noteDivProjectDom = document.querySelector(`#proj-${currentProjectId} .project-notes`);
-    noteDivProjectDom.appendChild(noteDom.note);
-
-    // set as complete on checkbox click
+    createDomNoteAndAddToDom(note);
 
     event.preventDefault();
+    // hide modal after submit
     addNoteModal.style.display = 'none';
 }
 
@@ -180,7 +177,7 @@ function createProject(prjTitle) {
 
 function saveProject(todoProject) {
     projects[todoProject.id] = todoProject;
-    localStorage.setItem('projects', projects);
+    localStorage.setItem('projects', JSON.stringify(projects));
 }
 
 function createAndSaveProject(prjTitle) {
@@ -211,6 +208,21 @@ function prjSubmit(event) {
 const addPrjForm = document.forms['new-prj'];
 addPrjForm.addEventListener('submit', prjSubmit);
 
+
+// notes object have keys as projects and values are note objects.
+let projects;
+if (localStorage.getItem('projects')) {
+    projects = JSON.parse(localStorage.getItem('projects'));
+    for (let [projectId, project] of Object.entries(projects)) {
+        addProjectToDom(project);
+        for (let [noteId, note] of Object.entries(project.notes)) {
+            // todo: El id de las notas esta dando problemas. Cuando se resetea la pagina, vuelve a 0, entonces empieza a reescribir las notas anteriores (con el mimso id). Ponerle un hash. Con los proyectos pasa igual.
+            createDomNoteAndAddToDom(note);
+        }
+    }
+} else {
+    projects = new Object();
+}
 
 // 5. The look of the User Interface is up to you, but it should be able to do the following:
 //      c. expand a single to-do to see/edit its details
