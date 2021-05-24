@@ -38,6 +38,33 @@
         </div>
     </div>
 
+    <!--Edit Note Modal-->
+    <div id="edit-note-modal" class="modal">
+        <div class="modal-content">
+            <span id="edit-note-modal-close" class="close">&times;</span>
+            <p>Edit Note Form</p>
+            <form name="new-note">
+                <!--Title and Description-->
+                <label for="edit-note-title">Title:</label>
+                <input type="text" placeholder="note title" name="note-title" id="edit-note-title"><br>
+                <label for="edit-note-description">Description:</label>
+                <input type="text" placeholder="note description" name="note-description" id="edit-note-description"><br>
+                <!--Due Date-->
+                <label for="due-date">Due date:</label>
+                <input type="date" id="edit-due-date" name="due-date"><br>
+                <!--Priority-->
+                <input type="radio" id="edit-priority1" name="priority" value="1">
+                <label for="priority1">1</label>
+                <input type="radio" id="edit-priority2" name="priority" value="2">
+                <label for="priority2">2</label>
+                <input type="radio" id="edit-priority3" name="priority" value="3">
+                <label for="priority3">3</label><br>
+                <!--Submit-->
+                <button type="submit" id="edit-note-submit">Edit Note!</button>
+            </form>
+        </div>
+    </div>
+
     <!--Add Project Button-->
     <div class="add-prj-container">
         <button id="open-add-prj-modal-btn">Add Project</button>
