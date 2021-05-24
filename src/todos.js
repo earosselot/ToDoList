@@ -24,17 +24,14 @@ const Note = (title, description, _dueDate, priority, projectId) => {
     }
 
     // complete default as not completed
-    let complete = false;
+    let completeStatus = false;
 
-    const toggleComplete = () => {
-        if (complete === true) {
-            complete = false;
-        } else {
-            complete = true;
-        }
-    }
+    // todo: toggleComplete method does not works, it does not change completeStatus in the object.
+    // const toggleComplete = () => {
+    //     completeStatus = !completeStatus;
+    // }
 
-    return {id, title, description, creationDate, dueDate, priority, projectId, complete, toggleComplete}
+    return {id, title, description, creationDate, dueDate, priority, projectId, completeStatus}
 }
 
 let projId = 0;

@@ -19,14 +19,14 @@ const createCheckBox = (id, title, priority, projectId) => {
     completeChekbox.setAttribute('name', 'complete');
     completeChekbox.className = 'complete-checkbox';
 
-    const completeChekboxLabel = document.createElement('label');
-    completeChekboxLabel.setAttribute('for', id);
-    completeChekboxLabel.className = 'todo-title';
-    completeChekboxLabel.className = `priority${priority}`;
-    completeChekboxLabel.textContent = title;
+    const completeCheckboxLabel = document.createElement('label');
+    completeCheckboxLabel.setAttribute('for', id);
+    completeCheckboxLabel.className = 'todo-title';
+    completeCheckboxLabel.className = `priority${priority}`;
+    completeCheckboxLabel.textContent = title;
 
     checkboxDiv.appendChild(completeChekbox)
-    checkboxDiv.appendChild(completeChekboxLabel)
+    checkboxDiv.appendChild(completeCheckboxLabel)
 
     return checkboxDiv
 }
@@ -37,7 +37,8 @@ const Note = (id, title, description, priority, project) => {
     // Creates an object containing a note DOM element
 
     const note = createDiv('todo-note');
-    note.setAttribute('note', `${id}`);
+    note.setAttribute('note', id);
+    note.setAttribute('project', project);
 
     const completeCheckBox = createCheckBox(id, title, priority, project)
 
