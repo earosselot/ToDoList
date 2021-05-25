@@ -1,11 +1,8 @@
 // import { compareDesc } from 'date-fns';
+import { v1 as uuidv1 } from 'uuid';
 
-let nextId = 0;
-
-const Note = (title, description, _dueDate, priority, projectId) => {
+const Note = (title, description, _dueDate, priority, projectId, id = uuidv1(), completeStatus = false) => {
     // Note Factory
-
-    let id = nextId++;
 
     // short title handler
     if (title.length < 4) {
@@ -23,9 +20,6 @@ const Note = (title, description, _dueDate, priority, projectId) => {
         console.log('priority not valid. Must be an integer between 1 and 3');
     }
 
-    // complete default as not completed
-    let completeStatus = false;
-
     // todo: toggleComplete method does not works, it does not change completeStatus in the object.
     // const toggleComplete = () => {
     //     completeStatus = !completeStatus;
@@ -34,18 +28,11 @@ const Note = (title, description, _dueDate, priority, projectId) => {
     return {id, title, description, creationDate, dueDate, priority, projectId, completeStatus}
 }
 
-let projId = 0;
-
-const Project = (name) => {
+const Project = (title, id = uuidv1()) => {
     // Project Factory
 
-    let id = projId++;
     let notes = {};
-    return {id, name, notes}
+    return {id, title, notes}
 }
 
-
 export { Note, Project };
-
-// Requeriments
-// creating new to-dos changing to-do priority

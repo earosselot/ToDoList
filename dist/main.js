@@ -2901,6 +2901,227 @@ function toDate(argument) {
 
 /***/ }),
 
+/***/ "./node_modules/uuid/dist/esm-browser/regex.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/uuid/dist/esm-browser/regex.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (/^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i);
+
+/***/ }),
+
+/***/ "./node_modules/uuid/dist/esm-browser/rng.js":
+/*!***************************************************!*\
+  !*** ./node_modules/uuid/dist/esm-browser/rng.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ rng)
+/* harmony export */ });
+// Unique ID creation requires a high quality random # generator. In the browser we therefore
+// require the crypto API and do not support built-in fallback to lower quality random number
+// generators (like Math.random()).
+var getRandomValues;
+var rnds8 = new Uint8Array(16);
+function rng() {
+  // lazy load so that environments that need to polyfill have a chance to do so
+  if (!getRandomValues) {
+    // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation. Also,
+    // find the complete implementation of crypto (msCrypto) on IE11.
+    getRandomValues = typeof crypto !== 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto) || typeof msCrypto !== 'undefined' && typeof msCrypto.getRandomValues === 'function' && msCrypto.getRandomValues.bind(msCrypto);
+
+    if (!getRandomValues) {
+      throw new Error('crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported');
+    }
+  }
+
+  return getRandomValues(rnds8);
+}
+
+/***/ }),
+
+/***/ "./node_modules/uuid/dist/esm-browser/stringify.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/uuid/dist/esm-browser/stringify.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _validate_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validate.js */ "./node_modules/uuid/dist/esm-browser/validate.js");
+
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+
+var byteToHex = [];
+
+for (var i = 0; i < 256; ++i) {
+  byteToHex.push((i + 0x100).toString(16).substr(1));
+}
+
+function stringify(arr) {
+  var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  // Note: Be careful editing this code!  It's been tuned for performance
+  // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+  var uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase(); // Consistency check for valid UUID.  If this throws, it's likely due to one
+  // of the following:
+  // - One or more input array values don't map to a hex octet (leading to
+  // "undefined" in the uuid)
+  // - Invalid input values for the RFC `version` or `variant` fields
+
+  if (!(0,_validate_js__WEBPACK_IMPORTED_MODULE_0__.default)(uuid)) {
+    throw TypeError('Stringified UUID is invalid');
+  }
+
+  return uuid;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (stringify);
+
+/***/ }),
+
+/***/ "./node_modules/uuid/dist/esm-browser/v1.js":
+/*!**************************************************!*\
+  !*** ./node_modules/uuid/dist/esm-browser/v1.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _rng_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./rng.js */ "./node_modules/uuid/dist/esm-browser/rng.js");
+/* harmony import */ var _stringify_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stringify.js */ "./node_modules/uuid/dist/esm-browser/stringify.js");
+
+ // **`v1()` - Generate time-based UUID**
+//
+// Inspired by https://github.com/LiosK/UUID.js
+// and http://docs.python.org/library/uuid.html
+
+var _nodeId;
+
+var _clockseq; // Previous uuid creation time
+
+
+var _lastMSecs = 0;
+var _lastNSecs = 0; // See https://github.com/uuidjs/uuid for API details
+
+function v1(options, buf, offset) {
+  var i = buf && offset || 0;
+  var b = buf || new Array(16);
+  options = options || {};
+  var node = options.node || _nodeId;
+  var clockseq = options.clockseq !== undefined ? options.clockseq : _clockseq; // node and clockseq need to be initialized to random values if they're not
+  // specified.  We do this lazily to minimize issues related to insufficient
+  // system entropy.  See #189
+
+  if (node == null || clockseq == null) {
+    var seedBytes = options.random || (options.rng || _rng_js__WEBPACK_IMPORTED_MODULE_0__.default)();
+
+    if (node == null) {
+      // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
+      node = _nodeId = [seedBytes[0] | 0x01, seedBytes[1], seedBytes[2], seedBytes[3], seedBytes[4], seedBytes[5]];
+    }
+
+    if (clockseq == null) {
+      // Per 4.2.2, randomize (14 bit) clockseq
+      clockseq = _clockseq = (seedBytes[6] << 8 | seedBytes[7]) & 0x3fff;
+    }
+  } // UUID timestamps are 100 nano-second units since the Gregorian epoch,
+  // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
+  // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
+  // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
+
+
+  var msecs = options.msecs !== undefined ? options.msecs : Date.now(); // Per 4.2.1.2, use count of uuid's generated during the current clock
+  // cycle to simulate higher resolution clock
+
+  var nsecs = options.nsecs !== undefined ? options.nsecs : _lastNSecs + 1; // Time since last uuid creation (in msecs)
+
+  var dt = msecs - _lastMSecs + (nsecs - _lastNSecs) / 10000; // Per 4.2.1.2, Bump clockseq on clock regression
+
+  if (dt < 0 && options.clockseq === undefined) {
+    clockseq = clockseq + 1 & 0x3fff;
+  } // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
+  // time interval
+
+
+  if ((dt < 0 || msecs > _lastMSecs) && options.nsecs === undefined) {
+    nsecs = 0;
+  } // Per 4.2.1.2 Throw error if too many uuids are requested
+
+
+  if (nsecs >= 10000) {
+    throw new Error("uuid.v1(): Can't create more than 10M uuids/sec");
+  }
+
+  _lastMSecs = msecs;
+  _lastNSecs = nsecs;
+  _clockseq = clockseq; // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
+
+  msecs += 12219292800000; // `time_low`
+
+  var tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+  b[i++] = tl >>> 24 & 0xff;
+  b[i++] = tl >>> 16 & 0xff;
+  b[i++] = tl >>> 8 & 0xff;
+  b[i++] = tl & 0xff; // `time_mid`
+
+  var tmh = msecs / 0x100000000 * 10000 & 0xfffffff;
+  b[i++] = tmh >>> 8 & 0xff;
+  b[i++] = tmh & 0xff; // `time_high_and_version`
+
+  b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
+
+  b[i++] = tmh >>> 16 & 0xff; // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
+
+  b[i++] = clockseq >>> 8 | 0x80; // `clock_seq_low`
+
+  b[i++] = clockseq & 0xff; // `node`
+
+  for (var n = 0; n < 6; ++n) {
+    b[i + n] = node[n];
+  }
+
+  return buf || (0,_stringify_js__WEBPACK_IMPORTED_MODULE_1__.default)(b);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (v1);
+
+/***/ }),
+
+/***/ "./node_modules/uuid/dist/esm-browser/validate.js":
+/*!********************************************************!*\
+  !*** ./node_modules/uuid/dist/esm-browser/validate.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _regex_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./regex.js */ "./node_modules/uuid/dist/esm-browser/regex.js");
+
+
+function validate(uuid) {
+  return typeof uuid === 'string' && _regex_js__WEBPACK_IMPORTED_MODULE_0__.default.test(uuid);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (validate);
+
+/***/ }),
+
 /***/ "./src/dom.js":
 /*!********************!*\
   !*** ./src/dom.js ***!
@@ -2918,49 +3139,74 @@ __webpack_require__.r(__webpack_exports__);
 const createDiv = (className) => {
     const div = document.createElement('div');
     div.className = className;
-    return div
+    return div;
 }
 
 
-const createCheckBox = (id, title, priority, projectId) => {
+const createCheckBox = (noteData) => {
     const checkboxDiv = createDiv('note-box');
 
     const completeChekbox = document.createElement('input');
     completeChekbox.setAttribute('type', 'checkbox');
     // im going to put id on note div as note attribute
-    completeChekbox.setAttribute('note', `${id}`);
-    completeChekbox.setAttribute('project', `${projectId}`);
+    completeChekbox.setAttribute('note', `${noteData.id}`);
+    completeChekbox.setAttribute('project', `${noteData.projectId}`);
     completeChekbox.setAttribute('name', 'complete');
     completeChekbox.className = 'complete-checkbox';
 
     const completeCheckboxLabel = document.createElement('label');
-    completeCheckboxLabel.setAttribute('for', id);
+    completeCheckboxLabel.setAttribute('for', noteData.id);
     completeCheckboxLabel.className = 'todo-title';
-    completeCheckboxLabel.className = `priority${priority}`;
-    completeCheckboxLabel.textContent = title;
+    completeCheckboxLabel.className = `priority${noteData.priority}`;
+    completeCheckboxLabel.textContent = noteData.title;
 
-    checkboxDiv.appendChild(completeChekbox)
-    checkboxDiv.appendChild(completeCheckboxLabel)
+    if (noteData.completeStatus) {
+        completeChekbox.checked = true;
+        completeCheckboxLabel.className = 'completed';
+    }
 
-    return checkboxDiv
+    checkboxDiv.appendChild(completeChekbox);
+    checkboxDiv.appendChild(completeCheckboxLabel);
+
+    return checkboxDiv;
 }
 
 
-const Note = (id, title, description, priority, project) => {
+const Note = (noteData) => {
     // DOM Note Factory
     // Creates an object containing a note DOM element
 
     const note = createDiv('todo-note');
-    note.setAttribute('note', id);
-    note.setAttribute('project', project);
+    note.setAttribute('note', noteData.id);
+    note.setAttribute('project', noteData.projectId);
 
-    const completeCheckBox = createCheckBox(id, title, priority, project)
+    const completeCheckBox = createCheckBox(noteData)
 
-    const descriptionDiv = createDiv('todo-description')
-    descriptionDiv.textContent = description;
+    const descriptionDiv = createDiv('todo-description');
+    descriptionDiv.textContent = noteData.description;
+    if (noteData.completeStatus) {
+        descriptionDiv.className = 'completed';
+    }
 
-    note.appendChild(completeCheckBox);
-    note.appendChild(descriptionDiv);
+    const textDiv = createDiv('note-text');
+    textDiv.appendChild(completeCheckBox);
+    textDiv.appendChild(descriptionDiv);
+
+    const deleteNoteDiv = createDiv('delete-note-div');
+    const deleteNoteButton = document.createElement('button');
+    deleteNoteButton.className = 'delete-note-button';
+    deleteNoteButton.setAttribute('note', noteData.id);
+    deleteNoteButton.setAttribute('project', noteData.projectId);
+    const deleteNoteIcon = document.createElement('i');
+    deleteNoteIcon.setAttribute('note', noteData.id);
+    deleteNoteIcon.setAttribute('project', noteData.projectId);
+    deleteNoteIcon.className = 'material-icons';
+    deleteNoteIcon.textContent = 'delete';
+    deleteNoteButton.appendChild(deleteNoteIcon);
+    deleteNoteDiv.appendChild(deleteNoteButton);
+
+    note.appendChild(textDiv);
+    note.appendChild(deleteNoteDiv);
 
     // todo: agregar un boton de eliminar nota
     // todo: agregar event listeners
@@ -2975,7 +3221,7 @@ const Project = (id, name) => {
 
     const createAddNoteBtn = (id) => {
         const addNoteBtn = document.createElement('button');
-        addNoteBtn.className = 'add-note-button'
+        addNoteBtn.className = 'add-note-button';
         addNoteBtn.setAttribute('project', id);
         addNoteBtn.textContent = 'Add Note';
         return addNoteBtn;
@@ -3007,6 +3253,7 @@ const Project = (id, name) => {
 
 
 
+
 /***/ }),
 
 /***/ "./src/todos.js":
@@ -3020,14 +3267,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Note": () => (/* binding */ Note),
 /* harmony export */   "Project": () => (/* binding */ Project)
 /* harmony export */ });
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v1.js");
 // import { compareDesc } from 'date-fns';
 
-let nextId = 0;
 
-const Note = (title, description, _dueDate, priority, projectId) => {
+const Note = (title, description, _dueDate, priority, projectId, id = (0,uuid__WEBPACK_IMPORTED_MODULE_0__.default)(), completeStatus = false) => {
     // Note Factory
-
-    let id = nextId++;
 
     // short title handler
     if (title.length < 4) {
@@ -3045,9 +3290,6 @@ const Note = (title, description, _dueDate, priority, projectId) => {
         console.log('priority not valid. Must be an integer between 1 and 3');
     }
 
-    // complete default as not completed
-    let completeStatus = false;
-
     // todo: toggleComplete method does not works, it does not change completeStatus in the object.
     // const toggleComplete = () => {
     //     completeStatus = !completeStatus;
@@ -3056,21 +3298,14 @@ const Note = (title, description, _dueDate, priority, projectId) => {
     return {id, title, description, creationDate, dueDate, priority, projectId, completeStatus}
 }
 
-let projId = 0;
-
-const Project = (name) => {
+const Project = (title, id = (0,uuid__WEBPACK_IMPORTED_MODULE_0__.default)()) => {
     // Project Factory
 
-    let id = projId++;
     let notes = {};
-    return {id, name, notes}
+    return {id, title, notes}
 }
 
 
-
-
-// Requeriments
-// creating new to-dos changing to-do priority
 
 
 /***/ })
@@ -3145,19 +3380,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // todo: agregar el tema de las fechas
+// todo: agregar condiciones a los forms para que no se pueda submitir cualquier cosa
 
-
-
-// ------------------ ADD NOTE FORM SUBMIT AUX -------------------
 function getParameters(formData) {
     let data = {};
     data['title'] = formData.get('note-title');
     data['description'] = formData.get('note-description');
     data['dueDate'] = formData.get('due-date');
     data['priority'] = formData.get('priority');
+    data['noteId'] = formData.get('note-id');
+    data['projectId'] = formData.get('project-id');
     return data;
 }
-
 
 function getNoteFormData(eventTarget) {
     const formData = new FormData(eventTarget);
@@ -3171,9 +3405,11 @@ function toggleComplete(event) {
 
     // todo: implement this logic as todos.note method--- not working yet
     projects[projectId]['notes'][noteId]['completeStatus'] = !projects[projectId]['notes'][noteId]['completeStatus'];
+    updateLocalStorage();
     // this method does nothing
     // projects[projectId]['notes'][noteId].toggleComplete();
 
+    // todo: esta clase podría aplicarse al div directamente. hay que var si no jode con el boton de borrar
     const checkboxLabel = event.target.nextElementSibling;
     const description = event.target.parentElement.nextElementSibling;
     checkboxLabel.classList.toggle('completed');
@@ -3187,6 +3423,8 @@ function fillFormWithNoteData(note) {
     document.getElementById('edit-note-title').value = note.title;
     document.getElementById('edit-note-description').value = note.description;
     document.getElementById('edit-due-date').value = (0,date_fns__WEBPACK_IMPORTED_MODULE_2__.default)(note.dueDate, 'yyyy-MM-dd');
+    document.getElementById('edit-note-note-id').value = note.id;
+    document.getElementById('edit-note-project-id').value = note.projectId;
 
     const priorityRadios = document.getElementsByName('priority');
     priorityRadios.forEach(radioElement => {
@@ -3205,28 +3443,45 @@ function launchEditNote(event) {
     editNoteModal.style.display = 'block';
 }
 
-function createNote(data) {
-    const note = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Note(data.title, data.description, data.dueDate, data.priority, currentProjectId);
+function createNote(data, projectId) {
+    const note = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Note(data.title, data.description, data.dueDate, data.priority, projectId);
     return note;
 }
 
-function saveNote(note) {
-    projects[currentProjectId].notes[note.id] = note;
+function updateLocalStorage() {
     localStorage.setItem('projects', JSON.stringify(projects))
 }
 
-function createAndSaveNote(data) {
-    const note = createNote(data);
+function saveNote(note) {
+    projects[note.projectId].notes[note.id] = note;
+    updateLocalStorage()
+}
+
+function createAndSaveNote(data, projectId) {
+    const note = createNote(data, projectId);
     saveNote(note);
     return note
 }
 
+function deleteNote(event) {
+    const noteId = event.target.getAttribute('note');
+    const projectId = event.target.getAttribute('project');
+    delete projects[projectId]['notes'][noteId];
+    updateLocalStorage();
+
+    event.target.closest('.todo-note').remove();
+    event.stopPropagation();
+
+}
+
 function createDomNote(note) {
     // create DOM note
-    const noteDom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Note(note.id, note.title, note.description, note.priority, note.projectId);
+    const noteDom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Note(note);
     // Checkbox event listener
     const  completeNoteCheckbox = noteDom.note.querySelector('.complete-checkbox');
     completeNoteCheckbox.addEventListener('click', toggleComplete);
+    const deleteNoteButton = noteDom.note.querySelector('.delete-note-button');
+    deleteNoteButton.addEventListener('click', deleteNote);
     // Edit note event listener
     noteDom.note.addEventListener('click', launchEditNote);
     return noteDom;
@@ -3241,9 +3496,8 @@ function createDomNoteAndAddToDom(note) {
 
 // -------------------- ADD NOTE FORM SUBMIT ---------------------
 function noteSubmit(event) {
-
     const data = getNoteFormData(this);
-    const note = createAndSaveNote(data);
+    const note = createAndSaveNote(data, currentProjectId);
 
     createDomNoteAndAddToDom(note);
 
@@ -3252,9 +3506,25 @@ function noteSubmit(event) {
     addNoteModal.style.display = 'none';
 }
 
+function changeNote(data) {
+    projects[data.projectId]['notes'][data.noteId]['title'] = data.title;
+    projects[data.projectId]['notes'][data.noteId]['description'] = data.description;
+    projects[data.projectId]['notes'][data.noteId]['dueDate'] = new Date(data.dueDate);
+    projects[data.projectId]['notes'][data.noteId]['priority'] = data.priority;
+}
+
+function editNote(event) {
+    const data = getNoteFormData(this);
+    changeNote(data);
+    updateLocalStorage();
+    editNoteModal.style.display = 'none';
+}
+
 const addNoteForm = document.forms['new-note'];
 addNoteForm.addEventListener('submit', noteSubmit);
 
+const editNoteForm = document.forms['edit-note'];
+editNoteForm.addEventListener('submit', editNote);
 
 // ---------------------- ADD PROJECT MODAL ----------------------
 const addPrjModal = document.getElementById('add-prj-modal');
@@ -3262,18 +3532,15 @@ const addPrjModalBtn = document.getElementById('open-add-prj-modal-btn');
 const addPrjModalSpan = document.getElementById('add-project-modal-close');
 addPrjModalSpan.onclick = () => addPrjModal.style.display = 'none';
 
-
 // ------------------------ EDIT NOTE MODAL -----------------------
 const editNoteModal = document.getElementById('edit-note-modal');
 const editNoteModalSpan = document.getElementById('edit-note-modal-close');
 editNoteModalSpan.onclick = () => editNoteModal.style.display = 'none';
 
-
 // ------------------------ ADD NOTE MODAL ------------------------
 const addNoteModal = document.getElementById('add-note-modal');
 const addNoteModalSpan = document.getElementById('add-note-modal-close');
 addNoteModalSpan.onclick = () => addNoteModal.style.display = 'none';
-
 
 // when btn click opens the modal, closes it when click span or outside modal
 addPrjModalBtn.onclick = () => {
@@ -3289,15 +3556,12 @@ window.onclick = (event) => {
     }
 }
 
-
 // ------------------- ADD PROJECT FORM SUBMIT -------------------
 // project container selection
 const projectContainer = document.querySelector('.project-container');
 
-
 // this variable will store the Id of the project where the last note is being added
 let currentProjectId;
-
 
 function launchAddNote (event) {
     addNoteForm.reset();
@@ -3307,7 +3571,7 @@ function launchAddNote (event) {
 }
 
 function addProjectToDom(todoProject) {
-    const projectDom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Project(todoProject.id, todoProject.name);
+    const projectDom = _dom_js__WEBPACK_IMPORTED_MODULE_1__.Project(todoProject.id, todoProject.title);
     const addNoteBtn = projectDom.project.querySelector('.add-note-button');
     addNoteBtn.addEventListener('click', launchAddNote);
     projectContainer.appendChild(projectDom.project);
@@ -3320,7 +3584,7 @@ function createProject(prjTitle) {
 
 function saveProject(todoProject) {
     projects[todoProject.id] = todoProject;
-    localStorage.setItem('projects', JSON.stringify(projects));
+    updateLocalStorage();
 }
 
 function createAndSaveProject(prjTitle) {
@@ -3351,20 +3615,29 @@ function prjSubmit(event) {
 const addPrjForm = document.forms['new-prj'];
 addPrjForm.addEventListener('submit', prjSubmit);
 
+function restoreProject(prjTitle, prjId) {
+    const todoProject = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Project(prjTitle, prjId);
+    return todoProject;
+}
 
-// notes object have keys as projects and values are note objects.
-let projects;
+function restoreNote(data, projectId) {
+    const note = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Note(data.title, data.description, data.dueDate, data.priority, projectId, data.id, data.completeStatus);
+    return note;
+}
+
+let projects = {};
 if (localStorage.getItem('projects')) {
-    projects = JSON.parse(localStorage.getItem('projects'));
-    for (let [projectId, project] of Object.entries(projects)) {
-        addProjectToDom(project);
-        for (let [noteId, note] of Object.entries(project.notes)) {
-            // todo: El id de las notas esta dando problemas. Cuando se resetea la pagina, vuelve a 0, entonces empieza a reescribir las notas anteriores (con el mimso id). Ponerle un hash. Con los proyectos pasa igual.
+    const loadedProjects = JSON.parse(localStorage.getItem('projects'));
+    for (let [projectId, project] of Object.entries(loadedProjects)) {
+        const todoProject = restoreProject(project.title, projectId);
+        saveProject(todoProject);
+        addProjectToDom(todoProject);
+        for (let [noteId, noteData] of Object.entries(project.notes)) {
+            const note = restoreNote(noteData, noteData.projectId);
+            saveNote(note);
             createDomNoteAndAddToDom(note);
         }
     }
-} else {
-    projects = new Object();
 }
 
 // 5. The look of the User Interface is up to you, but it should be able to do the following:

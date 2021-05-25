@@ -1,5 +1,5 @@
 /* todo: */
-.project-container, .project, .add-prj-container{
+.project-container, .project, .add-prj-container, .todo-note{
     display: flex;
 }
 
@@ -24,7 +24,7 @@
 .project {
     flex-direction: column;
     background-color: white;
-    flex-basis: 200px;
+    flex-basis: 250px;
     padding: 4px;
     margin: 5px;
     text-align: left;
@@ -37,6 +37,21 @@
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
+}
+
+.todo-note {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.delete-note-div {
+    width: 40px;
+    height: 33px;
+    margin-left: 5px;
+}
+
+.delete-note-div > button {
+    background-color: red;
 }
 
 .todo-description {

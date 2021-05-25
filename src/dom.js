@@ -4,49 +4,74 @@
 const createDiv = (className) => {
     const div = document.createElement('div');
     div.className = className;
-    return div
+    return div;
 }
 
 
-const createCheckBox = (id, title, priority, projectId) => {
+const createCheckBox = (noteData) => {
     const checkboxDiv = createDiv('note-box');
 
     const completeChekbox = document.createElement('input');
     completeChekbox.setAttribute('type', 'checkbox');
     // im going to put id on note div as note attribute
-    completeChekbox.setAttribute('note', `${id}`);
-    completeChekbox.setAttribute('project', `${projectId}`);
+    completeChekbox.setAttribute('note', `${noteData.id}`);
+    completeChekbox.setAttribute('project', `${noteData.projectId}`);
     completeChekbox.setAttribute('name', 'complete');
     completeChekbox.className = 'complete-checkbox';
 
     const completeCheckboxLabel = document.createElement('label');
-    completeCheckboxLabel.setAttribute('for', id);
+    completeCheckboxLabel.setAttribute('for', noteData.id);
     completeCheckboxLabel.className = 'todo-title';
-    completeCheckboxLabel.className = `priority${priority}`;
-    completeCheckboxLabel.textContent = title;
+    completeCheckboxLabel.className = `priority${noteData.priority}`;
+    completeCheckboxLabel.textContent = noteData.title;
 
-    checkboxDiv.appendChild(completeChekbox)
-    checkboxDiv.appendChild(completeCheckboxLabel)
+    if (noteData.completeStatus) {
+        completeChekbox.checked = true;
+        completeCheckboxLabel.className = 'completed';
+    }
 
-    return checkboxDiv
+    checkboxDiv.appendChild(completeChekbox);
+    checkboxDiv.appendChild(completeCheckboxLabel);
+
+    return checkboxDiv;
 }
 
 
-const Note = (id, title, description, priority, project) => {
+const Note = (noteData) => {
     // DOM Note Factory
     // Creates an object containing a note DOM element
 
     const note = createDiv('todo-note');
-    note.setAttribute('note', id);
-    note.setAttribute('project', project);
+    note.setAttribute('note', noteData.id);
+    note.setAttribute('project', noteData.projectId);
 
-    const completeCheckBox = createCheckBox(id, title, priority, project)
+    const completeCheckBox = createCheckBox(noteData)
 
-    const descriptionDiv = createDiv('todo-description')
-    descriptionDiv.textContent = description;
+    const descriptionDiv = createDiv('todo-description');
+    descriptionDiv.textContent = noteData.description;
+    if (noteData.completeStatus) {
+        descriptionDiv.className = 'completed';
+    }
 
-    note.appendChild(completeCheckBox);
-    note.appendChild(descriptionDiv);
+    const textDiv = createDiv('note-text');
+    textDiv.appendChild(completeCheckBox);
+    textDiv.appendChild(descriptionDiv);
+
+    const deleteNoteDiv = createDiv('delete-note-div');
+    const deleteNoteButton = document.createElement('button');
+    deleteNoteButton.className = 'delete-note-button';
+    deleteNoteButton.setAttribute('note', noteData.id);
+    deleteNoteButton.setAttribute('project', noteData.projectId);
+    const deleteNoteIcon = document.createElement('i');
+    deleteNoteIcon.setAttribute('note', noteData.id);
+    deleteNoteIcon.setAttribute('project', noteData.projectId);
+    deleteNoteIcon.className = 'material-icons';
+    deleteNoteIcon.textContent = 'delete';
+    deleteNoteButton.appendChild(deleteNoteIcon);
+    deleteNoteDiv.appendChild(deleteNoteButton);
+
+    note.appendChild(textDiv);
+    note.appendChild(deleteNoteDiv);
 
     // todo: agregar un boton de eliminar nota
     // todo: agregar event listeners
@@ -61,7 +86,7 @@ const Project = (id, name) => {
 
     const createAddNoteBtn = (id) => {
         const addNoteBtn = document.createElement('button');
-        addNoteBtn.className = 'add-note-button'
+        addNoteBtn.className = 'add-note-button';
         addNoteBtn.setAttribute('project', id);
         addNoteBtn.textContent = 'Add Note';
         return addNoteBtn;
@@ -89,5 +114,6 @@ const Project = (id, name) => {
 
     return {project}
 }
+
 
 export { Note, Project };
