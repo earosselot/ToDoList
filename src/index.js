@@ -45,7 +45,6 @@ function fillFormWithNoteData(note) {
     document.getElementById('edit-note-title').value = note.title;
     document.getElementById('edit-note-description').value = note.description;
     document.getElementById('edit-due-date').value = format(note.dueDate, 'yyyy-MM-dd');
-    console.log(note.creationDate);
     document.getElementById('edit-creation-date').value = format(note.creationDate, 'yyyy-MM-dd');
     document.getElementById('edit-note-note-id').value = note.id;
     document.getElementById('edit-note-project-id').value = note.projectId;
@@ -120,12 +119,12 @@ function createDomNoteAndAddToDom(note) {
 
 // -------------------- ADD NOTE FORM SUBMIT ---------------------
 function noteSubmit(event) {
+    event.preventDefault();
+
     const data = getNoteFormData(this);
     const note = createAndSaveNote(data, currentProjectId);
 
     createDomNoteAndAddToDom(note);
-
-    event.preventDefault();
     // hide modal after submit
     addNoteModal.style.display = 'none';
 }

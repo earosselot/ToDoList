@@ -3133,7 +3133,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Note": () => (/* binding */ Note),
 /* harmony export */   "Project": () => (/* binding */ Project)
 /* harmony export */ });
-// todo: agregar fechas
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
+
 
 
 const createDiv = (className) => {
@@ -3148,7 +3149,6 @@ const createCheckBox = (noteData) => {
 
     const completeChekbox = document.createElement('input');
     completeChekbox.setAttribute('type', 'checkbox');
-    // im going to put id on note div as note attribute
     completeChekbox.setAttribute('note', `${noteData.id}`);
     completeChekbox.setAttribute('project', `${noteData.projectId}`);
     completeChekbox.setAttribute('name', 'complete');
@@ -3182,15 +3182,16 @@ const Note = (noteData) => {
 
     const completeCheckBox = createCheckBox(noteData)
 
-    const descriptionDiv = createDiv('todo-description');
-    descriptionDiv.textContent = noteData.description;
+    const dateDiv = createDiv('todo-date');
+    dateDiv.textContent = (0,date_fns__WEBPACK_IMPORTED_MODULE_0__.default)(noteData.dueDate, 'dd-MM-yyy');
+
     if (noteData.completeStatus) {
-        descriptionDiv.className = 'completed';
+        dateDiv.className = 'completed';
     }
 
     const textDiv = createDiv('note-text');
     textDiv.appendChild(completeCheckBox);
-    textDiv.appendChild(descriptionDiv);
+    textDiv.appendChild(dateDiv);
 
     const deleteNoteDiv = createDiv('delete-note-div');
     const deleteNoteButton = document.createElement('button');
@@ -3271,16 +3272,13 @@ __webpack_require__.r(__webpack_exports__);
 // import { compareDesc } from 'date-fns';
 
 
-const Note = (title, description, _dueDate, priority, projectId, id = (0,uuid__WEBPACK_IMPORTED_MODULE_0__.default)(), completeStatus = false) => {
+const Note = (title, description, _dueDate, priority, projectId, id = (0,uuid__WEBPACK_IMPORTED_MODULE_0__.default)(), completeStatus = false, _creationDate = 0) => {
     // Note Factory
 
     // short title handler
     if (title.length < 4) {
         console.log('title must be at least 4 characters long.');
     }
-
-    // creation date handler
-    let creationDate = new Date();  // now
 
     // due date handler
     let dueDate = new Date(_dueDate);
@@ -3289,6 +3287,13 @@ const Note = (title, description, _dueDate, priority, projectId, id = (0,uuid__W
     if (priority < 1 || 3 < priority) {
         console.log('priority not valid. Must be an integer between 1 and 3');
     }
+    let creationDate;
+    if (_creationDate === 0) {
+        creationDate = new Date();
+    } else {
+        creationDate = new Date(_creationDate);
+    }
+
 
     // todo: toggleComplete method does not works, it does not change completeStatus in the object.
     // const toggleComplete = () => {
@@ -3423,6 +3428,7 @@ function fillFormWithNoteData(note) {
     document.getElementById('edit-note-title').value = note.title;
     document.getElementById('edit-note-description').value = note.description;
     document.getElementById('edit-due-date').value = (0,date_fns__WEBPACK_IMPORTED_MODULE_2__.default)(note.dueDate, 'yyyy-MM-dd');
+    document.getElementById('edit-creation-date').value = (0,date_fns__WEBPACK_IMPORTED_MODULE_2__.default)(note.creationDate, 'yyyy-MM-dd');
     document.getElementById('edit-note-note-id').value = note.id;
     document.getElementById('edit-note-project-id').value = note.projectId;
 
@@ -3496,12 +3502,12 @@ function createDomNoteAndAddToDom(note) {
 
 // -------------------- ADD NOTE FORM SUBMIT ---------------------
 function noteSubmit(event) {
+    event.preventDefault();
+
     const data = getNoteFormData(this);
     const note = createAndSaveNote(data, currentProjectId);
 
     createDomNoteAndAddToDom(note);
-
-    event.preventDefault();
     // hide modal after submit
     addNoteModal.style.display = 'none';
 }
@@ -3621,7 +3627,7 @@ function restoreProject(prjTitle, prjId) {
 }
 
 function restoreNote(data, projectId) {
-    const note = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Note(data.title, data.description, data.dueDate, data.priority, projectId, data.id, data.completeStatus);
+    const note = _todos_js__WEBPACK_IMPORTED_MODULE_0__.Note(data.title, data.description, data.dueDate, data.priority, projectId, data.id, data.completeStatus, data.creationDate);
     return note;
 }
 

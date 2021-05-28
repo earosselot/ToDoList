@@ -1,4 +1,4 @@
-// todo: agregar fechas
+import { format } from 'date-fns';
 
 
 const createDiv = (className) => {
@@ -13,7 +13,6 @@ const createCheckBox = (noteData) => {
 
     const completeChekbox = document.createElement('input');
     completeChekbox.setAttribute('type', 'checkbox');
-    // im going to put id on note div as note attribute
     completeChekbox.setAttribute('note', `${noteData.id}`);
     completeChekbox.setAttribute('project', `${noteData.projectId}`);
     completeChekbox.setAttribute('name', 'complete');
@@ -47,15 +46,16 @@ const Note = (noteData) => {
 
     const completeCheckBox = createCheckBox(noteData)
 
-    const descriptionDiv = createDiv('todo-description');
-    descriptionDiv.textContent = noteData.description;
+    const dateDiv = createDiv('todo-date');
+    dateDiv.textContent = format(noteData.dueDate, 'dd-MM-yyy');
+
     if (noteData.completeStatus) {
-        descriptionDiv.className = 'completed';
+        dateDiv.className = 'completed';
     }
 
     const textDiv = createDiv('note-text');
     textDiv.appendChild(completeCheckBox);
-    textDiv.appendChild(descriptionDiv);
+    textDiv.appendChild(dateDiv);
 
     const deleteNoteDiv = createDiv('delete-note-div');
     const deleteNoteButton = document.createElement('button');
