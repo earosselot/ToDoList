@@ -23,14 +23,14 @@
             <form name="new-note">
                 <!--Title and Description-->
                 <label for="add-note-title">Title:</label>
-                <input type="text" placeholder="note title" name="note-title" id="add-note-title"><br>
+                <input type="text" placeholder="note title" name="note-title" id="add-note-title" required><br>
                 <label for="add-note-description">Description:</label>
                 <input type="text" placeholder="note description" name="note-description" id="add-note-description"><br>
                 <!--Due Date-->
                 <label for="due-date">Due date:</label>
-                <input type="date" id="due-date" name="due-date"><br>
+                <input type="date" id="due-date" name="due-date" required><br>
                 <!--Priority-->
-                <input type="radio" id="priority1" name="priority" value="1">
+                <input type="radio" id="priority1" name="priority" value="1" required>
                 <label for="priority1">1</label>
                 <input type="radio" id="priority2" name="priority" value="2">
                 <label for="priority2">2</label>
@@ -50,17 +50,17 @@
             <form name="edit-note">
                 <!--Title and Description-->
                 <label for="edit-note-title">Title:</label>
-                <input type="text" placeholder="note title" name="note-title" id="edit-note-title"><br>
+                <input type="text" placeholder="note title" name="note-title" id="edit-note-title" requiered><br>
                 <label for="edit-note-description">Description:</label>
                 <input type="text" placeholder="note description" name="note-description" id="edit-note-description"><br>
                 <!--Creation Date-->
                 <label for="edit-creation-date">Creation date:</label>
-                <input type="date" id="edit-creation-date" name="creation-date"><br>
+                <input type="date" id="edit-creation-date" name="creation-date" readonly><br>
                 <!--Due Date-->
                 <label for="edit-due-date">Due date:</label>
-                <input type="date" id="edit-due-date" name="due-date"><br>
+                <input type="date" id="edit-due-date" name="due-date" required><br>
                 <!--Priority-->
-                <input type="radio" id="edit-priority1" name="priority" value="1">
+                <input type="radio" id="edit-priority1" name="priority" value="1" required>
                 <label for="priority1">1</label>
                 <input type="radio" id="edit-priority2" name="priority" value="2">
                 <label for="priority2">2</label>
