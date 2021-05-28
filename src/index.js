@@ -45,6 +45,8 @@ function fillFormWithNoteData(note) {
     document.getElementById('edit-note-title').value = note.title;
     document.getElementById('edit-note-description').value = note.description;
     document.getElementById('edit-due-date').value = format(note.dueDate, 'yyyy-MM-dd');
+    console.log(note.creationDate);
+    document.getElementById('edit-creation-date').value = format(note.creationDate, 'yyyy-MM-dd');
     document.getElementById('edit-note-note-id').value = note.id;
     document.getElementById('edit-note-project-id').value = note.projectId;
 
@@ -243,7 +245,7 @@ function restoreProject(prjTitle, prjId) {
 }
 
 function restoreNote(data, projectId) {
-    const note = todos.Note(data.title, data.description, data.dueDate, data.priority, projectId, data.id, data.completeStatus);
+    const note = todos.Note(data.title, data.description, data.dueDate, data.priority, projectId, data.id, data.completeStatus, data.creationDate);
     return note;
 }
 

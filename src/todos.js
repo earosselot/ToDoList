@@ -1,16 +1,13 @@
 // import { compareDesc } from 'date-fns';
 import { v1 as uuidv1 } from 'uuid';
 
-const Note = (title, description, _dueDate, priority, projectId, id = uuidv1(), completeStatus = false) => {
+const Note = (title, description, _dueDate, priority, projectId, id = uuidv1(), completeStatus = false, cretionDate = new Date()) => {
     // Note Factory
 
     // short title handler
     if (title.length < 4) {
         console.log('title must be at least 4 characters long.');
     }
-
-    // creation date handler
-    let creationDate = new Date();  // now
 
     // due date handler
     let dueDate = new Date(_dueDate);
