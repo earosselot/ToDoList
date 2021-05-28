@@ -1,6 +1,6 @@
 /* todo: */
 .project-container, .project, .add-prj-container, .todo-note{
-    display: flex;
+    /*display: flex;*/
 }
 
 .project-container, .add-prj-container {
@@ -11,26 +11,26 @@
 
 .project-container{
     /*height: 500px;*/
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
+    /*flex-direction: row;*/
+    /*flex-wrap: wrap;*/
+    /*justify-content: flex-start;*/
+    /*align-items: flex-start;*/
 }
 
 .add-prj-container {
-    justify-content: flex-end;
+    /*justify-content: flex-end;*/
 }
 
 .project {
-    flex-direction: column;
+    /*flex-direction: column;*/
     background-color: white;
-    flex-basis: 250px;
-    padding: 4px;
-    margin: 5px;
+    /*flex-basis: 250px;*/
+    /*padding: 4px;*/
+    /*margin: 5px;*/
     text-align: left;
     line-height: 17px;
     font-size: 15px;
-    border: 2px solid black;
+    /*border: 2px solid black;*/
 }
 
 .project .project-title {
@@ -40,8 +40,8 @@
 }
 
 .todo-note {
-    flex-direction: row;
-    justify-content: space-between;
+    /*flex-direction: row;*/
+    /*justify-content: space-between;*/
 }
 
 .delete-note-div {
@@ -61,8 +61,8 @@
 }
 
 #add-project {
-    align-self: flex-end;
-    justify-self: flex-end;
+    /*align-self: flex-end;*/
+    /*justify-self: flex-end;*/
 }
 
 .priority1 {

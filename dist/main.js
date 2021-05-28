@@ -3238,6 +3238,7 @@ const Project = (id, name) => {
 
     const projectDiv = createDiv('project');
     projectDiv.setAttribute('id', `proj-${id}`);
+    projectDiv.classList.add('col');
 
     const projectTitle = createDiv('project-title');
     projectTitle.innerText = name;
